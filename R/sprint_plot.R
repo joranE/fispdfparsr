@@ -13,7 +13,7 @@
 #' @examples
 #' \dontrun{
 #' require(ggplot2)
-#' spr <- parse_spr_df(file = system.file("inst/example_pdfs/spr_example1.pdf",package = "fispdfparsr"))
+#' spr <- parse_spr_df(file = system.file("example_pdfs/spr_example1.pdf",package = "fispdfparsr"))
 #' p <- spr_heat_plot(data = spr,type = "centered",nation_col = c("USA","CAN"))
 #' print(p)
 #' }

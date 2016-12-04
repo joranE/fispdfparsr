@@ -9,7 +9,7 @@
 #' @import tidyr
 #' @examples
 #' \dontrun{
-#' dst <- parse_dst_df(file = system.file("inst/example_pdfs/dst_example1.pdf",package = "fispdfparsr"))
+#' dst <- parse_dst_pdf(file = system.file("example_pdfs/dst_example1.pdf",package = "fispdfparsr"))
 #' }
 parse_dst_pdf <- function(file = NULL,race_distance = NULL){
   if (is.null(file)){
@@ -58,7 +58,8 @@ parse_dst_pdf <- function(file = NULL,race_distance = NULL){
   dst <- dst %>%
     mutate(split = if_else(split == 'finish_time',paste0(race_distance,"km"),split),
            split = gsub(pattern = "km$",replacement = "",x = split),
-           split = as.numeric(split)) %>%
+           split = as.numeric(split),
+           fispoints = as.numeric(fispoints)) %>%
     group_by(split) %>%
     mutate(split_rank = min_rank(split_time),
            split_time_back = split_time - min(split_time)) %>%

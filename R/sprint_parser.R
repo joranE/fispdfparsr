@@ -18,7 +18,7 @@
 #' @import dplyr
 #' @examples
 #' \dontrun{
-#' spr <- parse_spr_df(file = system.file("inst/example_pdfs/spr_example1.pdf",package = "fispdfparsr"))
+#' spr <- parse_spr_pdf(file = system.file("example_pdfs/spr_example1.pdf",package = "fispdfparsr"))
 #' }
 parse_spr_pdf <- function(file = NULL){
   if (is.null(file)){
