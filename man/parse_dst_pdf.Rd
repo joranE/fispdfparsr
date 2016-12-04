@@ -4,10 +4,10 @@
 \alias{parse_dst_pdf}
 \title{Parse Distance Race PDFs}
 \usage{
-parse_dst_pdf(race_pdf = NULL, race_distance = NULL)
+parse_dst_pdf(file = NULL, race_distance = NULL)
 }
 \arguments{
-\item{race_pdf}{file path to PDF of distance results}
+\item{file}{file path to PDF of distance results}
 
 \item{race_distance}{numeric; race distance in km}
 }
@@ -17,7 +17,7 @@ suitable for analysis. All times are converted to seconds.
 }
 \examples{
 \dontrun{
-dst <- parse_dst_df(final_pdf = system.file("inst/example_pdfs/men_dst.pdf",package = "fispdfparsr"))
+dst <- parse_dst_df(file = system.file("inst/example_pdfs/dst_example1.pdf",package = "fispdfparsr"))
 }
 }
 

@@ -4,18 +4,26 @@
 \alias{parse_spr_pdf}
 \title{Parse Sprint Race PDFs}
 \usage{
-parse_spr_pdf(final_pdf = NULL)
+parse_spr_pdf(file = NULL)
 }
 \arguments{
-\item{final_pdf}{file path to PDF of final sprint results}
+\item{file}{file path to PDF of final sprint results}
 }
 \description{
 Convert FIS sprint result PDFs into a format more
 suitable for analysis. All times are converted to seconds.
 }
+\details{
+The PDF parser in the tabulizer package will sometimes miss blank columns,
+for example if no one from QF3 ended up on the final heat, the parser will
+simply skip that blank column. In these cases you will be prompted to supply
+an index for where to insert a blank column so that the tables all line up
+correctly. You might need to have the PDF open to look at while running this
+function so you can verify where to add the column.
+}
 \examples{
 \dontrun{
-spr <- parse_spr_df(final_pdf = system.file("inst/example_pdfs/sprint_final.pdf",package = "fispdfparsr"))
+spr <- parse_spr_df(file = system.file("inst/example_pdfs/spr_example1.pdf",package = "fispdfparsr"))
 }
 }
 
