@@ -3,7 +3,14 @@
 #' Convert FIS sprint result PDFs into a format more
 #' suitable for analysis. All times are converted to seconds.
 #'
-#' @param final_pdf file path to PDF of final sprint results
+#' The PDF parser in the tabulizer package will sometimes miss blank columns,
+#' for example if no one from QF3 ended up on the final heat, the parser will
+#' simply skip that blank column. In these cases you will be prompted to supply
+#' an index for where to insert a blank column so that the tables all line up
+#' correctly. You might need to have the PDF open to look at while running this
+#' function so you can verify where to add the column.
+#'
+#' @param file file path to PDF of final sprint results
 #' @export
 #' @import tabulizer
 #' @import stringr
@@ -11,24 +18,48 @@
 #' @import dplyr
 #' @examples
 #' \dontrun{
-#' spr <- parse_spr_df(final_pdf = system.file("inst/example_pdfs/sprint_final.pdf",package = "fispdfparsr"))
+#' spr <- parse_spr_df(file = system.file("inst/example_pdfs/spr_example1.pdf",package = "fispdfparsr"))
 #' }
-parse_spr_pdf <- function(final_pdf = NULL){
-  if (is.null(final_pdf)){
-    stop("Must provide file path for final_pdf.")
+parse_spr_pdf <- function(file = NULL){
+  if (is.null(file)){
+    stop("Must provide file path.")
   }
 
   #Read tables from final PDF
-  spr_tbls <- tabulizer::extract_tables(file = final_pdf,
+  spr_tbls <- tabulizer::extract_tables(file = file,
                              method = "matrix")
 
-  #Ditch weather & legend tables
-  weather_legend <- sapply(spr_tbls,function(x) any(grepl("weather|legend",tolower(x[,1]))))
+  #Ditch weather, legend & race officials tables
+  weather_legend <- sapply(spr_tbls,function(x) any(grepl("weather|legend|chief|delegate",tolower(x[,1]))))
   spr_tbls <- spr_tbls[!weather_legend]
 
   #Assumed maximal set of column names
   cn <- c('rank','bib','name','nation','qual_time','qual_rank',
           paste0("qf",1:5),paste0("sf",1:2),"final_heat")
+
+  #First three tables should have 14, 13 and 11 columns
+  act_cols <- sapply(spr_tbls,ncol)[1:3]
+  missing_cols <- act_cols < c(14,13,11)
+  if (any(missing_cols)){
+    #Hoo boy! Here we go...
+    for (i in which(missing_cols)){
+      nc <- ncol(spr_tbls[[i]])
+      cat("I think this section is missing a QF column.\n")
+      print(spr_tbls[[i]])
+      cat("Insert a blank column after which column? (Enter 0 to skip)?\n")
+      col_idx <- readline(prompt = "After column: ")
+      col_idx <- as.integer(col_idx)
+      if (is.na(col_idx)) stop("Invalid column choice.")
+      if (col_idx == 0) next
+      if (col_idx > (nc - 3) | col_idx < 6) stop("Column choice out of bounds.")
+      else{
+        left <- spr_tbls[[i]][,seq_len(col_idx),drop = FALSE]
+        right <- spr_tbls[[i]][,(col_idx+1):nc,drop = FALSE]
+        mid <- matrix(rep("",nrow(spr_tbls[[i]])),ncol = 1)
+        spr_tbls[[i]] <- cbind(left,mid,right)
+      }
+    }
+  }
 
   #Try to attach column names
   spr_tbls <- lapply(spr_tbls,function(x,cn) {
@@ -50,20 +81,29 @@ parse_spr_pdf <- function(final_pdf = NULL){
     mutate(rank = as.integer(rank),
            bib = as.integer(bib),
            qual_time = period_to_seconds(hms(paste0("00:",qual_time))),
-           qual_rank = as.integer(stringr::str_replace_all(qual_rank,"[^0-9]","")))
+           qual_rank = as.integer(stringr::str_replace_all(qual_rank,"[^0-9]",""))) %>%
+    filter(!is.na(rank))
 
   #More fiddly cleanup and time parsing
   for (col_i in cn[grepl("^qf|^sf|^final",cn)]){
+    #Try to catch people relegated to last in a heat
+    spr_df[[col_i]] <- gsub(pattern = "RAL",
+                            replacement = "(6)",
+                            x = spr_df[[col_i]],
+                            fixed = TRUE)
+    #Separate heat time & rank
     spr_df <- separate_(spr_df,
                         col = col_i,
                         into = c(paste(col_i,"time",sep = "_"),paste(col_i,"rank",sep = "_")),
                         sep = "[(]")
+
     spr_df[[paste(col_i,"rank",sep = "_")]] <- as.integer(gsub(pattern = "[^0-9]",
                                                                replacement = "",
                                                                x = spr_df[[paste(col_i,"rank",sep = "_")]]))
     spr_df[[paste(col_i,"time",sep = "_")]] <- gsub(pattern = "[^0-9:\\.]",
                                                     replacement = "",
                                                     x = spr_df[[paste(col_i,"time",sep = "_")]])
+    #Convert times to seconds
     colon_count <- 2 - stringr::str_count(spr_df[[paste(col_i,"time",sep = "_")]],":")
     time_pad <- ifelse(colon_count == 1,"00:","00:00:")
     time_pad[is.na(time_pad)] <- ""

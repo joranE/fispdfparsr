@@ -3,23 +3,24 @@
 #' Convert FIS distance result PDFs into a format more
 #' suitable for analysis. All times are converted to seconds.
 #'
-#' @param race_pdf file path to PDF of distance results
+#' @param file file path to PDF of distance results
 #' @param race_distance numeric; race distance in km
 #' @export
+#' @import tidyr
 #' @examples
 #' \dontrun{
-#' dst <- parse_dst_df(final_pdf = system.file("inst/example_pdfs/men_dst.pdf",package = "fispdfparsr"))
+#' dst <- parse_dst_df(file = system.file("inst/example_pdfs/dst_example1.pdf",package = "fispdfparsr"))
 #' }
-parse_dst_pdf <- function(race_pdf = NULL,race_distance = NULL){
-  if (is.null(final_pdf)){
-    stop("Must provide file path for final_pdf.")
+parse_dst_pdf <- function(file = NULL,race_distance = NULL){
+  if (is.null(file)){
+    stop("Must provide file path for race_pdf.")
   }
   if (is.null(race_distance)){
     stop("Must provide race distance (in km).")
   }
 
   #Read tables from final PDF
-  dst_tbls <- tabulizer::extract_tables(file = race_pdf,
+  dst_tbls <- tabulizer::extract_tables(file = file,
                                         method = "matrix")
 
   #Ditch weather & legend tables
