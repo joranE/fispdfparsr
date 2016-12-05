@@ -44,7 +44,11 @@ parse_dst_pdf <- function(file = NULL,race_distance = NULL){
   },cn = cn)
 
   dst <- bind_rows(dst_tbls) %>%
-    select(-starts_with("blank"),-behind) %>%
+    select(-starts_with("blank"),-behind)
+  if (!any(grepl("^fis$",cn))){
+    dst$fis <- NA
+  }
+  dst <- dst %>%
     rename(fisid = `fis code`,nation = `nsa code`,
            fispoints = fis,finish_time = finish) %>%
     select(rank,bib,fisid,name,nation,fispoints,everything()) %>%
@@ -57,7 +61,7 @@ parse_dst_pdf <- function(file = NULL,race_distance = NULL){
 
   dst <- dst %>%
     mutate(split = if_else(split == 'finish_time',paste0(race_distance,"km"),split),
-           split = gsub(pattern = "km$",replacement = "",x = split),
+           split = gsub(pattern = "[[:alpha:]]",replacement = "",x = split),
            split = as.numeric(split),
            fispoints = as.numeric(fispoints)) %>%
     group_by(split) %>%
