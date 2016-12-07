@@ -10,7 +10,8 @@ parse_wc_pts_pdf <- function(file){
   pts_tbls <- extract_tables(file = file)
 
   #Remove race schedule tbl
-  idx <- sapply(pts_tbls,function(x) any(grepl("^[0-9]{1,2} [[:upper:]]{3} [0-9]{4}$",x)))
+  idx <- sapply(pts_tbls,function(x) {
+    any(grepl("^[0-9]{1,2} [[:upper:]]{3} [0-9]{4}$",x))})
   pts_tbls <- pts_tbls[!idx]
 
   fisid_name_noc <- function(x){
