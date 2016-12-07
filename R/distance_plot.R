@@ -7,17 +7,20 @@
 #' the y axis is split rank, split time back or split percent back. Note that
 #' both "time" and "percent" will usually lead to a fair amount of overplotting
 #' of the athlete names due to space constraints.
-#' @param nation_col character vector; if specified, highlight athletes from these nations. Use
-#' the three letter codes, all caps. e.g. \code{nation_col = c("NOR","RUS")} You can only specify one of
-#' \code{nation_col} or \code{name_col}.
-#' @param name_col character vector; if specified, highlight these. Must spell out each athlete's
-#' full name as it appears in \code{data}, exactly. e.g. \code{name_col = c("HOFFMAN Noah","HARVEY Alex")}
-#' You can only specify one of \code{nation_col} or \code{name_col}.
+#' @param nation_col character vector; if specified, highlight athletes from
+#' these nations. Use the three letter codes, all caps. e.g.
+#' \code{nation_col = c("NOR","RUS")}. You can only specify one of \code{nation_col}
+#' or \code{name_col}.
+#' @param name_col character vector; if specified, highlight these. Must spell
+#' out each athlete's full name as it appears in \code{data}, exactly. e.g.
+#' \code{name_col = c("HOFFMAN Noah","HARVEY Alex")} You can only specify one
+#' of \code{nation_col} or \code{name_col}.
 #' @param offset.x numeric; amount to slide the names to the left/right
 #' @examples
 #' \dontrun{
 #' require(ggplot2)
-#' dst <- parse_dst_df(file = system.file("example_pdfs/dst_example1.pdf",package = "fispdfparsr"))
+#' dst <- parse_dst_df(file = system.file("example_pdfs/dst_example1.pdf",
+#'                                        package = "fispdfparsr"))
 #' p <- dst_split_plot(data = dst,type = "percent",nation_col = c("USA","CAN"))
 #' print(p)
 #' }
@@ -35,8 +38,14 @@ dst_split_plot <- function(data,type = c("rank","time","percent"),
     mutate(split_perc_back = round(100 * (split_time_back / min(split_time)),2)) %>%
     ungroup()
 
-  ycol <- switch(type,rank = "split_rank",time = "split_time_back",percent = "split_perc_back")
-  ylab <- switch(type,rank = "Split Rank",time = "Split Time Back (Sec)",percent = "Split % Back")
+  ycol <- switch(EXPR = type,
+                 rank = "split_rank",
+                 time = "split_time_back",
+                 percent = "split_perc_back")
+  ylab <- switch(EXPR = type,
+                 rank = "Split Rank",
+                 time = "Split Time Back (Sec)",
+                 percent = "Split % Back")
   y_ties_adj <- switch(type,rank = 1,time = 1,percent = 1)
   n_splits <- dplyr::n_distinct(data$split)
 
@@ -71,7 +80,8 @@ dst_split_plot <- function(data,type = c("rank","time","percent"),
 
   data$ycol_labs <- format(data[[ycol]],digits = 2)
 
-  p <- ggplot(data = data,aes_string(x = "split",y = ycol,group = "name")) +
+  p <- ggplot(data = data,
+              aes_string(x = "split",y = ycol,group = "name")) +
     line_layer +
     geom_point(size = 4,fill = "white",
                color = "white",shape = 21) +

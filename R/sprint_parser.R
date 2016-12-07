@@ -5,10 +5,11 @@
 #'
 #' The PDF parser in the tabulizer package will sometimes miss blank columns,
 #' for example if no one from QF3 ended up on the final heat, the parser will
-#' simply skip that blank column. In these cases you will be prompted to supply
-#' an index for where to insert a blank column so that the tables all line up
-#' correctly. You might need to have the PDF open to look at while running this
-#' function so you can verify where to add the column.
+#' simply skip that blank column. The function attemps to detect this and if it
+#' does you will be prompted to supply an index for where to insert a blank
+#' column so that the tables all line up correctly. You might need to have the
+#' PDF open to look at while running this function so you can verify where to
+#' add the column.
 #'
 #' @param file file path to PDF of final sprint results
 #' @export
@@ -18,7 +19,8 @@
 #' @import dplyr
 #' @examples
 #' \dontrun{
-#' spr <- parse_spr_pdf(file = system.file("example_pdfs/spr_example1.pdf",package = "fispdfparsr"))
+#' spr <- parse_spr_pdf(file = system.file("example_pdfs/spr_example1.pdf",
+#'                                          package = "fispdfparsr"))
 #' }
 parse_spr_pdf <- function(file = NULL){
   if (is.null(file)){
@@ -30,7 +32,9 @@ parse_spr_pdf <- function(file = NULL){
                              method = "matrix")
 
   #Ditch weather, legend & race officials tables
-  weather_legend <- sapply(spr_tbls,function(x) any(grepl("weather|legend|chief|delegate",tolower(x[,1]))))
+  weather_legend <- sapply(spr_tbls,function(x) {
+    any(grepl("weather|legend|chief|delegate",tolower(x[,1])))
+    })
   spr_tbls <- spr_tbls[!weather_legend]
 
   #Assumed maximal set of column names
@@ -104,10 +108,7 @@ parse_spr_pdf <- function(file = NULL){
                                                     replacement = "",
                                                     x = spr_df[[paste(col_i,"time",sep = "_")]])
     #Convert times to seconds
-    colon_count <- 2 - stringr::str_count(spr_df[[paste(col_i,"time",sep = "_")]],":")
-    time_pad <- ifelse(colon_count == 1,"00:","00:00:")
-    time_pad[is.na(time_pad)] <- ""
-    spr_df[[paste(col_i,"time",sep = "_")]] <- lubridate::period_to_seconds(lubridate::hms(paste0(time_pad,spr_df[[paste(col_i,"time",sep = "_")]])))
+    spr_df[[paste(col_i,"time",sep = "_")]] <- convert_to_secs(times = spr_df[[paste(col_i,"time",sep = "_")]])
   }
 
   #Gather times and ranks

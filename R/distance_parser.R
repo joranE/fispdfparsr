@@ -9,11 +9,12 @@
 #' @import tidyr
 #' @examples
 #' \dontrun{
-#' dst <- parse_dst_pdf(file = system.file("example_pdfs/dst_example1.pdf",package = "fispdfparsr"))
+#' dst <- parse_dst_pdf(file = system.file("example_pdfs/dst_example1.pdf",
+#'                                         package = "fispdfparsr"),15)
 #' }
 parse_dst_pdf <- function(file = NULL,race_distance = NULL){
   if (is.null(file)){
-    stop("Must provide file path for race_pdf.")
+    stop("Must provide file path for race PDF.")
   }
   if (is.null(race_distance)){
     stop("Must provide race distance (in km).")
@@ -24,7 +25,9 @@ parse_dst_pdf <- function(file = NULL,race_distance = NULL){
                                         method = "matrix")
 
   #Ditch weather & legend tables
-  weather_legend <- sapply(dst_tbls,function(x) any(grepl("weather|legend",tolower(x[,1]))))
+  weather_legend <- sapply(dst_tbls,function(x) {
+    any(grepl("weather|legend",tolower(x[,1])))
+    })
   dst_tbls <- dst_tbls[!weather_legend]
 
   cn <- stringr::str_trim(tolower(dst_tbls[[1]][1,]),side = "both")
@@ -52,16 +55,21 @@ parse_dst_pdf <- function(file = NULL,race_distance = NULL){
     rename(fisid = `fis code`,nation = `nsa code`,
            fispoints = fis,finish_time = finish) %>%
     select(rank,bib,fisid,name,nation,fispoints,everything()) %>%
-    gather(key = split,value = split_time,-rank,-bib,-fisid,-name,-nation,-fispoints) %>%
-    mutate(split_time = gsub(pattern ="[[:space:]](.*)",replacement = "",x = split_time))
-  colon_count <- 2 - stringr::str_count(dst$split_time,":")
-  time_pad <- ifelse(colon_count == 1,"00:","00:00:")
-  time_pad[is.na(time_pad)] <- ""
-  dst$split_time <- lubridate::period_to_seconds(lubridate::hms(paste0(time_pad,dst$split_time)))
+    gather(key = split,
+           value = split_time,
+           -rank,-bib,-fisid,-name,-nation,-fispoints) %>%
+    mutate(split_time = gsub(pattern ="[[:space:]](.*)",
+                             replacement = "",
+                             x = split_time))
+  dst$split_time <- convert_to_secs(times = dst$split_time)
 
   dst <- dst %>%
-    mutate(split = if_else(split == 'finish_time',paste0(race_distance,"km"),split),
-           split = gsub(pattern = "[[:alpha:]]",replacement = "",x = split),
+    mutate(split = if_else(split == 'finish_time',
+                           paste0(race_distance,"km"),
+                           split),
+           split = gsub(pattern = "[[:alpha:]]",
+                        replacement = "",
+                        x = split),
            split = as.numeric(split),
            fispoints = as.numeric(fispoints)) %>%
     group_by(split) %>%

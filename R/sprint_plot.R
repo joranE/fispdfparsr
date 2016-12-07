@@ -5,15 +5,18 @@
 #' @param data data.frame, as returned by \code{\link{parse_spr_pdf}}
 #' @param type character; one of "rank", "time" or "centered"; controls whether
 #' the y axis is heat rank, heat time or the times centered by round.
-#' @param nation_col character vector; if specified, highlight athletes from these nations. Use
-#' the three letter codes, all caps. e.g. \code{nation_col = c("NOR","RUS")}
-#' @param name_col character vector; if specified, highlight these. Must spell out each athlete's
-#' full name as it appears in \code{data}, exactly. e.g. \code{name_col = c("HOFFMAN Noah","HARVEY Alex")}
+#' @param nation_col character vector; if specified, highlight athletes from
+#' these nations. Use the three letter codes, all caps. e.g.
+#' \code{nation_col = c("NOR","RUS")}
+#' @param name_col character vector; if specified, highlight these. Must spell
+#' out each athlete's full name as it appears in \code{data}, exactly. e.g.
+#' \code{name_col = c("HOFFMAN Noah","HARVEY Alex")}
 #' @param offset.x numeric; amount to slide the names to the left/right
 #' @examples
 #' \dontrun{
 #' require(ggplot2)
-#' spr <- parse_spr_df(file = system.file("example_pdfs/spr_example1.pdf",package = "fispdfparsr"))
+#' spr <- parse_spr_df(file = system.file("example_pdfs/spr_example1.pdf",
+#'                                         package = "fispdfparsr"))
 #' p <- spr_heat_plot(data = spr,type = "centered",nation_col = c("USA","CAN"))
 #' print(p)
 #' }
@@ -27,9 +30,18 @@ spr_heat_plot <- function(data,type = c("rank","time","centered"),
   data <- filter(data,rank <= 30)
   type <- match.arg(arg = type)
 
-  ycol <- switch(type,rank = "round_ranks",time = "times",centered = "centered_times")
-  ylab <- switch(type,rank = "Round Rank",time = "Raw Times (Sec)",centered = "Centered Times By Round")
-  y_ties_adj <- switch(type,rank = 1,time = 1,percent = 1)
+  ycol <- switch(EXPR = type,
+                 rank = "round_ranks",
+                 time = "times",
+                 centered = "centered_times")
+  ylab <- switch(EXPR = type,
+                 rank = "Round Rank",
+                 time = "Raw Times (Sec)",
+                 centered = "Centered Times By Round")
+  y_ties_adj <- switch(EXPR = type,
+                       rank = 1,
+                       time = 1,
+                       percent = 1)
 
   data$round_type <- dplyr::recode(data$round,
                                   qual = "Qualification",
@@ -71,7 +83,8 @@ spr_heat_plot <- function(data,type = c("rank","time","centered"),
     line_layer <- geom_line(aes(color = col),alpha = 0.5)
   }
 
-  p <- ggplot(data = data,aes_string(x = "round_type",y = ycol,group = "name")) +
+  p <- ggplot(data = data,
+              aes_string(x = "round_type",y = ycol,group = "name")) +
     line_layer +
     geom_point(shape = 21,color = "white",
                fill = "white",size = 4) +
