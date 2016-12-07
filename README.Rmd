@@ -10,8 +10,9 @@ output:
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "README-",
-  cache = TRUE
+  fig.path = "README/README-fig",
+  cache = TRUE,
+  cache.path = "README/README-cache-"
 )
 ```
 

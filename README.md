@@ -45,7 +45,7 @@ dst <- parse_dst_pdf(file = dst_pth,race_distance = 15)
 dst
 #> # A tibble: 384 × 10
 #>     rank   bib   fisid                   name nation fispoints split
-#>    <chr> <chr>   <chr>                  <chr>  <chr>     <chr> <dbl>
+#>    <chr> <chr>   <chr>                  <chr>  <chr>     <dbl> <dbl>
 #> 1      1    21 3180535          NISKANEN Iivo    FIN      0.00   3.1
 #> 2      2    58 3421320           IVERSEN Emil    NOR      3.84   3.1
 #> 3      3    70 3420228 SUNDBY Martin Johnsrud    NOR      4.21   3.1
@@ -66,11 +66,12 @@ The package includes a function to produce some simple plots. Note that choosing
 
 ``` r
 require(ggplot2)
+#> Loading required package: ggplot2
 p <- dst_split_plot(data = dst,type = "percent",nation_col = "SWE")
 print(p)
 ```
 
-![](README-dst_plot_perc-1.png)
+![](README/README-figdst_plot_perc-1.png)
 
 ``` r
 require(ggplot2)
@@ -78,7 +79,7 @@ p <- dst_split_plot(data = dst,type = "rank",name_col = c("HOFFMAN Noah","HARVEY
 print(p)
 ```
 
-![](README-dst_plot_rank-1.png)
+![](README/README-figdst_plot_rank-1.png)
 
 ### Sprint
 
@@ -124,7 +125,7 @@ print(p)
 #> Warning: Removed 36 rows containing missing values (geom_text).
 ```
 
-![](README-spr_plot_centered-1.png)
+![](README/README-figspr_plot_centered-1.png)
 
 ``` r
 require(ggplot2)
@@ -133,4 +134,4 @@ print(p)
 #> Warning: Removed 36 rows containing missing values (geom_text).
 ```
 
-![](README-spr_plot_rank-1.png)
+![](README/README-figspr_plot_rank-1.png)
