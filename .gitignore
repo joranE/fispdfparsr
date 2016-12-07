@@ -2,5 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-README/README-cache*
-README/README-fig*png
+README_cache/*
+README*.png
+.README*
