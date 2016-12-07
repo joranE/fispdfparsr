@@ -6,6 +6,9 @@
 \usage{
 parse_stage_pdf(file)
 }
+\arguments{
+\item{file}{character; file path to PDF}
+}
 \description{
 Parses results from stage race standings PDFs, i.e. the PDFs with cumulative
 results from multiple stages.
