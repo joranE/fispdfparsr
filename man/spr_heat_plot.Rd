@@ -13,11 +13,13 @@ spr_heat_plot(data, type = c("rank", "time", "centered"), nation_col = NULL,
 \item{type}{character; one of "rank", "time" or "centered"; controls whether
 the y axis is heat rank, heat time or the times centered by round.}
 
-\item{nation_col}{character vector; if specified, highlight athletes from these nations. Use
-the three letter codes, all caps. e.g. \code{nation_col = c("NOR","RUS")}}
+\item{nation_col}{character vector; if specified, highlight athletes from
+these nations. Use the three letter codes, all caps. e.g.
+\code{nation_col = c("NOR","RUS")}}
 
-\item{name_col}{character vector; if specified, highlight these. Must spell out each athlete's
-full name as it appears in \code{data}, exactly. e.g. \code{name_col = c("HOFFMAN Noah","HARVEY Alex")}}
+\item{name_col}{character vector; if specified, highlight these. Must spell
+out each athlete's full name as it appears in \code{data}, exactly. e.g.
+\code{name_col = c("HOFFMAN Noah","HARVEY Alex")}}
 
 \item{offset.x}{numeric; amount to slide the names to the left/right}
 }
@@ -27,7 +29,8 @@ Various graphs for sprint race heats.
 \examples{
 \dontrun{
 require(ggplot2)
-spr <- parse_spr_df(file = system.file("inst/example_pdfs/spr_example1.pdf",package = "fispdfparsr"))
+spr <- parse_spr_df(file = system.file("example_pdfs/spr_example1.pdf",
+                                        package = "fispdfparsr"))
 p <- spr_heat_plot(data = spr,type = "centered",nation_col = c("USA","CAN"))
 print(p)
 }

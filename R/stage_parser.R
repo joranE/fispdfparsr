@@ -3,7 +3,7 @@
 #' Parses results from stage race standings PDFs, i.e. the PDFs with cumulative
 #' results from multiple stages.
 #'
-#' @param file
+#' @param file character; file path to PDF
 #' @export
 #' @examples
 #' \dontrun{

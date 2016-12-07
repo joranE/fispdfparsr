@@ -15,13 +15,15 @@ the y axis is split rank, split time back or split percent back. Note that
 both "time" and "percent" will usually lead to a fair amount of overplotting
 of the athlete names due to space constraints.}
 
-\item{nation_col}{character vector; if specified, highlight athletes from these nations. Use
-the three letter codes, all caps. e.g. \code{nation_col = c("NOR","RUS")} You can only specify one of
-\code{nation_col} or \code{name_col}.}
+\item{nation_col}{character vector; if specified, highlight athletes from
+these nations. Use the three letter codes, all caps. e.g.
+\code{nation_col = c("NOR","RUS")}. You can only specify one of \code{nation_col}
+or \code{name_col}.}
 
-\item{name_col}{character vector; if specified, highlight these. Must spell out each athlete's
-full name as it appears in \code{data}, exactly. e.g. \code{name_col = c("HOFFMAN Noah","HARVEY Alex")}
-You can only specify one of \code{nation_col} or \code{name_col}.}
+\item{name_col}{character vector; if specified, highlight these. Must spell
+out each athlete's full name as it appears in \code{data}, exactly. e.g.
+\code{name_col = c("HOFFMAN Noah","HARVEY Alex")} You can only specify one
+of \code{nation_col} or \code{name_col}.}
 
 \item{offset.x}{numeric; amount to slide the names to the left/right}
 }
@@ -31,7 +33,8 @@ Various slope graphs for distance race splits.
 \examples{
 \dontrun{
 require(ggplot2)
-dst <- parse_dst_df(file = system.file("inst/example_pdfs/dst_example1.pdf",package = "fispdfparsr"))
+dst <- parse_dst_df(file = system.file("example_pdfs/dst_example1.pdf",
+                                       package = "fispdfparsr"))
 p <- dst_split_plot(data = dst,type = "percent",nation_col = c("USA","CAN"))
 print(p)
 }

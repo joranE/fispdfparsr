@@ -17,7 +17,8 @@ suitable for analysis. All times are converted to seconds.
 }
 \examples{
 \dontrun{
-dst <- parse_dst_df(file = system.file("inst/example_pdfs/dst_example1.pdf",package = "fispdfparsr"))
+dst <- parse_dst_pdf(file = system.file("example_pdfs/dst_example1.pdf",
+                                        package = "fispdfparsr"),15)
 }
 }
 
