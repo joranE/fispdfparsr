@@ -4,7 +4,7 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' stg <- parse_wc_pts_pdf(file = system.file("example_pdfs/wc_pts_example1.pdf",package = "fispdfparsr))
+#' stg <- parse_wc_pts_pdf(file = system.file("example_pdfs/wc_pts_example1.pdf",package = "fispdfparsr"))
 #' }
 parse_wc_pts_pdf <- function(file){
   pts_tbls <- extract_tables(file = file)
