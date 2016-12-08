@@ -126,7 +126,7 @@ stage_plot <- function(data,type = c("rank","time","percent"),
   xlim <- c(0,length(x_breaks) + 1)
 
   p <- ggplot(data = all_pts,aes(x = stage,y = y,group = name)) +
-    geom_line() +
+    line_layer +
     geom_point(size = 2,fill = "white",
                color = "white",shape = 21) +
     geom_text(data = left_labels,
