@@ -7,8 +7,8 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' stg <- parse_stage_pdf(file = system.file("example_pdfs/stage_example1.pdf",
-#'                                            package = "fispdfparsr"))
+#' pdf <- system.file("example_pdfs/stage_example1.pdf",package = "fispdfparsr")
+#' stg <- parse_stage_pdf(file = pdf)
 #' }
 parse_stage_pdf <- function(file){
   stg_tbls <- extract_tables(file = file)
