@@ -35,7 +35,7 @@ stage_plot <- function(data,type = c("rank","time","percent"),
   y_ties_adj <- switch(type,rank = 1,time = 1,percent = 1)
 
   #Stage times
-  stg_times <- stg %>%
+  stg_times <- data %>%
     select(fisid,name,nation,ends_with("time")) %>%
     select(-total_time) %>%
     gather(key = stage_time,value = time,ends_with("time")) %>%
@@ -45,7 +45,7 @@ stage_plot <- function(data,type = c("rank","time","percent"),
     arrange(fisid,name,nation,stage)
 
   #Stage bonuses
-  stg_bonuses <- stg %>%
+  stg_bonuses <- data %>%
     select(fisid,name,nation,ends_with("bonus")) %>%
     gather(key = stage_bonus,value = bonus,ends_with("bonus")) %>%
     mutate(stage_bonus = gsub(pattern = "_bonus$",replacement = "",x = stage_bonus),
