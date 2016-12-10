@@ -19,7 +19,7 @@
 #' @examples
 #' \dontrun{
 #' require(ggplot2)
-#' dst <- parse_dst_df(file = system.file("example_pdfs/dst_example1.pdf",
+#' dst <- parse_dst_pdf(file = system.file("example_pdfs/dst_example1.pdf",
 #'                                        package = "fispdfparsr"))
 #' p <- dst_split_plot(data = dst,type = "percent",nation_col = c("USA","CAN"))
 #' print(p)
@@ -34,7 +34,7 @@ dst_split_plot <- function(data,type = c("rank","time","percent"),
   type <- match.arg(arg = type)
   #Add percent back column
   data <- data %>%
-    group_by(split) %>%
+    group_by(split_km) %>%
     mutate(split_perc_back = round(100 * (split_time_back / min(split_time)),2)) %>%
     ungroup()
 
@@ -47,15 +47,15 @@ dst_split_plot <- function(data,type = c("rank","time","percent"),
                  time = "Split Time Back (Sec)",
                  percent = "Split % Back")
   y_ties_adj <- switch(type,rank = 1,time = 1,percent = 1)
-  n_splits <- dplyr::n_distinct(data$split)
+  n_splits <- dplyr::n_distinct(data$split_km)
 
-  left_labels <- filter(data,split == min(split))
+  left_labels <- filter(data,split_km == min(split_km))
   if (anyDuplicated(left_labels[[ycol]]) > 0){
     ties <- which(duplicated(left_labels[[ycol]]))
     left_labels[[ycol]][ties] <- left_labels[[ycol]][ties] + y_ties_adj
   }
 
-  right_labels <- filter(data,split == max(split))
+  right_labels <- filter(data,split_km == max(split_km))
   if (anyDuplicated(right_labels[[ycol]]) > 0){
     ties <- which(duplicated(right_labels[[ycol]]))
     right_labels[[ycol]][ties] <- right_labels[[ycol]][ties] + y_ties_adj
@@ -73,7 +73,7 @@ dst_split_plot <- function(data,type = c("rank","time","percent"),
     line_layer <- geom_line(aes(color = col))
   }
 
-  x_breaks <- unique(data$split)
+  x_breaks <- unique(data$split_km)
   left_labels$label_left <- min(x_breaks) - offset.x
   right_labels$label_right <- max(x_breaks) + offset.x
   xlim <- c(1,max(x_breaks) + 2)
@@ -81,7 +81,7 @@ dst_split_plot <- function(data,type = c("rank","time","percent"),
   data$ycol_labs <- format(data[[ycol]],digits = 2)
 
   p <- ggplot(data = data,
-              aes_string(x = "split",y = ycol,group = "name")) +
+              aes_string(x = "split_km",y = ycol,group = "name")) +
     line_layer +
     geom_point(size = 4,fill = "white",
                color = "white",shape = 21) +
