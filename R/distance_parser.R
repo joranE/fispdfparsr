@@ -23,8 +23,7 @@ parse_dst_pdf <- function(file = NULL,race_distance = NULL){
   }
 
   #Read tables from final PDF
-  dst_tbls <- tabulizer::extract_tables(file = file,
-                                        method = "matrix")
+  dst_tbls <- parse_pdf(file = file,method = "matrix",...)
 
   #Ditch weather & legend tables
   weather_legend <- sapply(dst_tbls,function(x) {

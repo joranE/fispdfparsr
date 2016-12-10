@@ -16,7 +16,6 @@
 #' @param file character; file path to PDF (use the PDF for the final results
 #' not the qualification results)
 #' @export
-#' @import tabulizer
 #' @import stringr
 #' @import lubridate
 #' @import dplyr
@@ -31,8 +30,7 @@ parse_spr_pdf <- function(file = NULL){
   }
 
   #Read tables from final PDF
-  spr_tbls <- tabulizer::extract_tables(file = file,
-                             method = "matrix")
+  spr_tbls <- parse_pdf(file = file,method = "matrix")
 
   #Ditch weather, legend & race officials tables
   weather_legend <- sapply(spr_tbls,function(x) {

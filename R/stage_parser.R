@@ -18,7 +18,7 @@
 #' stg <- parse_stage_pdf(file = pdf)
 #' }
 parse_stage_pdf <- function(file){
-  stg_tbls <- extract_tables(file = file)
+  stg_tbls <- parse_pdf(file = file,method = "matrix",...)
 
   #Remove race schedule tbl
   idx <- sapply(stg_tbls,function(x) {
