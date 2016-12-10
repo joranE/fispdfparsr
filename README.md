@@ -2,9 +2,11 @@
 fispdfparsr
 ===========
 
-fispdfparsr is a collection of utilities for parsing PDF cross-country race results from [FIS](http://data.fis-ski.com). The focus initially is results from World Cups form recent seasons.
+fispdfparsr is a collection of utilities for parsing PDF cross-country race results from [FIS](http://data.fis-ski.com). The focus initially is results from World Cups from recent seasons.
 
-It has seen extremely limited testing and will surely break on some PDFs, since FIS likes to monkey with their formatting pretty regularly. If you find a PDF where it breaks, please file an issue.
+It has seen extremely limited testing and will surely break on some PDFs, since FIS likes to monkey with their formatting pretty regularly. If you find a PDF where it breaks, please file an issue and include a link to the offending PDF.
+
+For some reason, some PDFs are just parsed as garbage, and I haven't quite figured out why.
 
 Installation
 ------------
@@ -38,31 +40,31 @@ spr_pth <- system.file("example_pdfs/spr_example1.pdf",package = "fispdfparsr")
 
 ### Distance
 
-Note that for distance races we need to explicitly provide the race distance, since it isn't easily retreivable from the PDF.
+Note that for distance races we need to explicitly provide the race distance, since it isn't easily retreivable from the PDF. Be aware that I've found the parser to be somewhat slow, so be patient.
 
 ``` r
 dst <- parse_dst_pdf(file = dst_pth,race_distance = 15)
 dst
 #> # A tibble: 384 × 10
-#>     rank   bib   fisid                   name nation fispoints split
-#>    <chr> <chr>   <chr>                  <chr>  <chr>     <dbl> <dbl>
-#> 1      1    21 3180535          NISKANEN Iivo    FIN      0.00   3.1
-#> 2      2    58 3421320           IVERSEN Emil    NOR      3.84   3.1
-#> 3      3    70 3420228 SUNDBY Martin Johnsrud    NOR      4.21   3.1
-#> 4      4    25 1283892           OLSSON Johan    SWE      6.39   3.1
-#> 5      4    48 3420994        TOENSETH Didrik    NOR      6.39   3.1
-#> 6      6    46 3420961      KROGH Finn Haagen    NOR      6.88   3.1
-#> 7      7    84 3500664      HALFVARSSON Calle    SWE      7.97   3.1
-#> 8      8    62 3480695 BESSMERTNYKH Alexander    RUS      9.14   3.1
-#> 9      9    56 3180053        HEIKKINEN Matti    FIN     12.03   3.1
-#> 10    10    33 3220002        MUSGRAVE Andrew    GBR     12.71   3.1
-#> # ... with 374 more rows, and 3 more variables: split_time <dbl>,
-#> #   split_rank <int>, split_time_back <dbl>
+#>    finish_rank   bib   fisid                   name nation fispoints
+#>          <chr> <chr>   <chr>                  <chr>  <chr>     <dbl>
+#> 1            1    21 3180535          NISKANEN Iivo    FIN      0.00
+#> 2            3    58 3421320           IVERSEN Emil    NOR      3.84
+#> 3            2    70 3420228 SUNDBY Martin Johnsrud    NOR      4.21
+#> 4            4    25 1283892           OLSSON Johan    SWE      6.39
+#> 5            5    48 3420994        TOENSETH Didrik    NOR      6.39
+#> 6            6    46 3420961      KROGH Finn Haagen    NOR      6.88
+#> 7            7    84 3500664      HALFVARSSON Calle    SWE      7.97
+#> 8            8    62 3480695 BESSMERTNYKH Alexander    RUS      9.14
+#> 9           14    56 3180053        HEIKKINEN Matti    FIN     12.03
+#> 10          11    33 3220002        MUSGRAVE Andrew    GBR     12.71
+#> # ... with 374 more rows, and 4 more variables: split_km <dbl>,
+#> #   split_time <dbl>, split_rank <int>, split_time_back <dbl>
 ```
 
-The result is a data.frame with one row for each athlete at each split. This means that the values in the first 6 columns are repeated for each athlete for each split. The columns `split_time`, `split_rank` and `split_time_back` are specific to each split for each athlete.
+The result is a `data.frame` (specifically a `tbl_df`) with one row for each athlete at each split. This means that the values in the first 6 columns are repeated for each athlete for each split. The columns `split_time`, `split_rank` and `split_time_back` are specific to each split for each athlete.
 
-The package includes a function to produce some simple plots. Note that choosing `type = "time"` or `type = "percent"` will likely lead to lots of overplotting of athlete's names. There only so much space on a plot.
+The package includes a function to produce some simple plots. Note that choosing `type = "time"` or `type = "percent"` will likely lead to lots of overplotting of athlete's names. There is only so much space on a plot.
 
 ``` r
 require(ggplot2)
@@ -85,7 +87,7 @@ print(p)
 
 The sprint race plots focus on each round of heats. Parsing the sprint PDFs is a bit trickier, since the Java PDF parser we're relying on will silently omit blank table columns. This means that if no one in the final came from QF3, that column will be blank and the parser will simply drop it.
 
-`parse_spr_pdf` tries to detect when this happens and prompts you to supply the index for where to insert a blank column. It should only be an issue for the final and semifinal sections of the PDF.
+`parse_spr_pdf` tries to detect when this happens and prompts you to supply the index for where to insert a blank column. It should only be an issue for the final and semifinal sections of the PDF. However, this does mean that this function generally can only be run interactively and with some supervision.
 
 ``` r
 spr_example1 <- parse_spr_pdf(file = spr_pth)
@@ -129,7 +131,9 @@ print(p)
 
 ``` r
 require(ggplot2)
-p <- spr_heat_plot(data = spr_example1,type = "rank",name_col = c("FALK Hanna","HAGA Ragnhild"))
+p <- spr_heat_plot(data = spr_example1,
+                   type = "rank",
+                   name_col = c("FALK Hanna","HAGA Ragnhild"))
 print(p)
 #> Warning: Removed 36 rows containing missing values (geom_text).
 ```
