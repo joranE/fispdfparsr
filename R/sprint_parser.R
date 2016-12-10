@@ -11,7 +11,10 @@
 #' PDF open to look at while running this function so you can verify where to
 #' add the column.
 #'
-#' @param file file path to PDF of final sprint results
+#' @result A data.frame; specifically a \code[dplyr]{\link{tbl_df}}
+#'
+#' @param file character; file path to PDF (use the PDF for the final results
+#' not the qualification results)
 #' @export
 #' @import tabulizer
 #' @import stringr

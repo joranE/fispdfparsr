@@ -4,7 +4,7 @@
 
 * Parsers for distance, sprint, stage race and World Cup points PDFs
 
-* Plotting functions for distance and sprint PDF data
+* Plotting functions for distance, sprint and stage race PDF data
 
 * Added README with package description and some example
 

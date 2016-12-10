@@ -39,8 +39,12 @@ stage_plot <- function(data,type = c("rank","time","percent"),
     select(fisid,name,nation,ends_with("time")) %>%
     select(-total_time) %>%
     gather(key = stage_time,value = time,ends_with("time")) %>%
-    mutate(stage_time = gsub(pattern = "_time$",replacement = "",x = stage_time),
-           stage_time = gsub(pattern = "^stage",replacement = "S",stage_time)) %>%
+    mutate(stage_time = gsub(pattern = "_time$",
+                             replacement = "",
+                             x = stage_time),
+           stage_time = gsub(pattern = "^stage",
+                             replacement = "S",
+                             stage_time)) %>%
     rename(stage = stage_time) %>%
     arrange(fisid,name,nation,stage)
 
@@ -48,8 +52,12 @@ stage_plot <- function(data,type = c("rank","time","percent"),
   stg_bonuses <- data %>%
     select(fisid,name,nation,ends_with("bonus")) %>%
     gather(key = stage_bonus,value = bonus,ends_with("bonus")) %>%
-    mutate(stage_bonus = gsub(pattern = "_bonus$",replacement = "",x = stage_bonus),
-           stage_bonus = gsub(pattern = "^stage",replacement = "S",x = stage_bonus)) %>%
+    mutate(stage_bonus = gsub(pattern = "_bonus$",
+                              replacement = "",
+                              x = stage_bonus),
+           stage_bonus = gsub(pattern = "^stage",
+                              replacement = "S",
+                              x = stage_bonus)) %>%
     rename(stage = stage_bonus) %>%
     arrange(fisid,name,nation,stage)
 
