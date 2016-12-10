@@ -61,10 +61,16 @@ dst_clean <- function(tbls,race_distance,...){
 }
 
 dst_clean_mass <- function(tbls,race_distance){
+  #Ditch weather & legend tables
+  weather_legend <- sapply(tbls,function(x) {
+    any(grepl("weather|legend|chief|delegate|did not finish",tolower(x[,1])))
+  })
+  tbls <- tbls[!weather_legend]
 
   tbl_head <- tbls[[1]][1:3,]
   cn <- apply(tbl_head,2,function(x) x[x != "" & !grepl("BONUS",x)][1])
   cn <- stringr::str_trim(tolower(cn),side = "both")
+  cn[is.na(cn)] <- paste0("blank",seq_len(sum(is.na(cn))))
 
   tbls <- lapply(tbls,function(x,cn){
     x <- x[-(1:5),]
