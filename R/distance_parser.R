@@ -7,6 +7,7 @@
 #'
 #' @param file file path to PDF of distance results
 #' @param race_distance numeric; race distance in km
+#' @param long_mass boolean
 #' @export
 #' @import tidyr
 #' @examples
@@ -14,7 +15,7 @@
 #' dst <- parse_dst_pdf(file = system.file("example_pdfs/dst_example1.pdf",
 #'                                         package = "fispdfparsr"),15)
 #' }
-parse_dst_pdf <- function(file = NULL,race_distance = NULL){
+parse_dst_pdf <- function(file = NULL,race_distance,long_mass = FALSE){
   if (is.null(file)){
     stop("Must provide file path for race PDF.")
   }
@@ -28,7 +29,7 @@ parse_dst_pdf <- function(file = NULL,race_distance = NULL){
   #Escape hatch of 30k/50k mass start races
   # that are more similar to stage races in that
   # they have bonus seconds at split
-  if (race_distance %in% c(30,50)){
+  if (long_mass){
     result <- dst_clean_mass(tbls = tbls,race_distance = race_distance)
   }else{
     result <- dst_clean(tbls = tbls,race_distance = race_distance)
