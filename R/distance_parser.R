@@ -7,7 +7,7 @@
 #'
 #' @param file file path to PDF of distance results
 #' @param race_distance numeric; race distance in km
-#' @param long_mass boolean
+#' @param long_mass boolean; falg for handling long mass start start races
 #' @export
 #' @import tidyr
 #' @examples
