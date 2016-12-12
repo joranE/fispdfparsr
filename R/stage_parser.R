@@ -18,7 +18,7 @@
 #' stg <- parse_stage_pdf(file = pdf)
 #' }
 parse_stage_pdf <- function(file){
-  stg_tbls <- parse_pdf(file = file,method = "matrix",...)
+  stg_tbls <- parse_pdf(file = file,method = "matrix")
 
   result <- stage_clean(tbls = stg_tbls)
   result

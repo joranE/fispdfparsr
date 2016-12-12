@@ -24,7 +24,7 @@ parse_dst_pdf <- function(file = NULL,race_distance,long_mass = FALSE){
   }
 
   #Read tables from final PDF
-  tbls <- parse_pdf(file = file,method = "matrix",...)
+  tbls <- parse_pdf(file = file,method = "matrix")
 
   #Escape hatch of 30k/50k mass start races
   # that are more similar to stage races in that
