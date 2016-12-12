@@ -33,7 +33,6 @@ parse_dst_pdf <- function(file = NULL,race_distance,long_mass = FALSE){
     result <- dst_clean_mass(tbls = tbls,race_distance = race_distance)
   }else{
     result <- dst_clean(tbls = tbls,race_distance = race_distance)
->>>>>>> tests
   }
   result
 }
