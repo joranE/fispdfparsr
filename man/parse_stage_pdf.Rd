@@ -13,6 +13,12 @@ parse_stage_pdf(file)
 Parses results from stage race standings PDFs, i.e. the PDFs with cumulative
 results from multiple stages.
 }
+\section{Warning}{
+ For PDFs that only contain results from 1-2 days of a stage
+race, I have found that this function will garble the within stage rank
+columns somewhat. In my limited testing, the results are typically repairable
+with minimal work.
+}
 \examples{
 \dontrun{
 pdf <- system.file("example_pdfs/stage_example1.pdf",package = "fispdfparsr")

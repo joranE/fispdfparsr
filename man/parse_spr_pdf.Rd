@@ -7,7 +7,8 @@
 parse_spr_pdf(file = NULL)
 }
 \arguments{
-\item{file}{file path to PDF of final sprint results}
+\item{file}{character; file path to PDF (use the PDF for the final results
+not the qualification results)}
 }
 \description{
 Convert FIS sprint result PDFs into a format more

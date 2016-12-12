@@ -4,12 +4,14 @@
 \alias{parse_dst_pdf}
 \title{Parse Distance Race PDFs}
 \usage{
-parse_dst_pdf(file = NULL, race_distance = NULL)
+parse_dst_pdf(file = NULL, race_distance, long_mass = FALSE)
 }
 \arguments{
 \item{file}{file path to PDF of distance results}
 
 \item{race_distance}{numeric; race distance in km}
+
+\item{long_mass}{boolean; flag for handling long mass start start races}
 }
 \description{
 Convert FIS distance result PDFs into a format more

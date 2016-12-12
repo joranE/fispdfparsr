@@ -33,7 +33,7 @@ Various slope graphs for distance race splits.
 \examples{
 \dontrun{
 require(ggplot2)
-dst <- parse_dst_df(file = system.file("example_pdfs/dst_example1.pdf",
+dst <- parse_dst_pdf(file = system.file("example_pdfs/dst_example1.pdf",
                                        package = "fispdfparsr"))
 p <- dst_split_plot(data = dst,type = "percent",nation_col = c("USA","CAN"))
 print(p)
