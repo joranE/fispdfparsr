@@ -1,7 +1,7 @@
 Package: fispdfparsr
 Type: Package
 Title: Parse FIS Race Result PDFs
-Version: 0.0.1
+Version: 0.0.2
 Author: Joran Elias
 Maintainer: Joran Elias <statisticalskier@gmail.com>
 URL: https://github.com/joranE/fispdfparsr
