@@ -102,3 +102,78 @@ dst_split_plot <- function(data,type = c("rank","time","percent"),
           legend.direction = "horizontal")
   p
 }
+
+#' Plot Distance Races Split Movement
+#'
+#' Highlight movement up and down by skiers throughout a distance race.
+#'
+#' @param data data.frame; as returned by \code{\link{parse_dst_pdf}}
+#' @param n integer; number of athletes to highlight in each direction
+#' @param top_n integer; focus on athletes moving into or out of the top_n
+#' @param offset.x numeric; amount to slide the names to the left/right
+#' @export
+dst_move_plot <- function(data,n = 5,top_n = Inf,offset.x = 0.25){
+  rc <- dst_rank_change(data = data,n = n,top_n = top_n)
+  rc <- bind_rows(rc) %>%
+    mutate(gain_loss = rep(c("Moved Up",'Moved Back'),each = n),
+           col = rep(c('up','down'),each = n)) %>%
+    select(fisid,name,gain_loss,col)
+
+  ycol <- "split_rank"
+  ylab <- "Split Rank"
+  y_ties_adj <- 1
+  n_splits <- dplyr::n_distinct(data$split_km)
+
+  data_facet <- bind_rows(data,data) %>%
+    mutate(gain_loss = rep(c("Moved Up","Moved Back"),each = nrow(data)))
+  data_facet <- data_facet %>%
+    left_join(rc,by = c('fisid','name','gain_loss'))
+
+  left_labels <- filter(data,split_km == min(split_km))
+  if (anyDuplicated(left_labels[[ycol]]) > 0){
+    ties <- which(duplicated(left_labels[[ycol]]))
+    left_labels[[ycol]][ties] <- left_labels[[ycol]][ties] + y_ties_adj
+  }
+  ll_facet <- bind_rows(left_labels,left_labels) %>%
+    mutate(gain_loss = rep(c("Moved Up","Moved Back"),each = nrow(left_labels)))
+
+  right_labels <- filter(data,split_km == max(split_km))
+  if (anyDuplicated(right_labels[[ycol]]) > 0){
+    ties <- which(duplicated(right_labels[[ycol]]))
+    right_labels[[ycol]][ties] <- right_labels[[ycol]][ties] + y_ties_adj
+  }
+  rl_facet <- bind_rows(right_labels,right_labels) %>%
+    mutate(gain_loss = rep(c("Moved Up","Moved Back"),each = nrow(right_labels)))
+
+  x_breaks <- unique(data_facet$split_km)
+  ll_facet$label_left <- min(x_breaks) - offset.x
+  rl_facet$label_right <- max(x_breaks) + offset.x
+  xlim <- c(1,max(x_breaks) + 2)
+
+  data_facet$ycol_labs <- format(data_facet[[ycol]],digits = 2)
+  data_facet$size <- if_else(is.na(data_facet$col),"normal","big")
+
+  p <- ggplot(data = data_facet,
+              aes_string(x = "split_km",y = ycol,group = "name")) +
+    facet_wrap(~gain_loss,nrow = 1) +
+    geom_line(aes(col = col,size = size),show.legend = FALSE) +
+    geom_point(size = 4,fill = "white",
+               color = "white",shape = 21) +
+    geom_text(aes_string(label = "ycol_labs"),size = 2) +
+    geom_text(data = ll_facet,
+              mapping = aes_string(x = "label_left",y = ycol,
+                                   label = "name"),
+              hjust = 1,size = 2) +
+    geom_text(data = rl_facet,
+              mapping = aes_string(x = "label_right",y = ycol,
+                                   label = "name"),
+              hjust = 0,size = 2) +
+    labs(x = "Split (km)",y = ylab) +
+    scale_x_continuous(breaks = x_breaks,labels = x_breaks,limits = xlim) +
+    scale_size_manual(values = c('normal' = 0.5,'big' = 1)) +
+    theme_minimal() +
+    theme(panel.grid.major.x = element_blank(),
+          legend.position = "bottoms",
+          legend.direction = "horizontal")
+  p
+}
