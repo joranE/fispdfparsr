@@ -39,6 +39,9 @@ dst_clean <- function(tbls,race_distance,...){
            -rank,-bib,-fisid,-name,-nation,-fispoints) %>%
     mutate(split_time = gsub(pattern ="[[:space:]](.*)",
                              replacement = "",
+                             x = split_time),
+           split_time = gsub(pattern = "=.*$",
+                             replacement = "",
                              x = split_time))
   tbls$split_time <- convert_to_secs(times = tbls$split_time)
 
