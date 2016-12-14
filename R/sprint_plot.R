@@ -22,7 +22,7 @@
 #' }
 #' @import ggplot2
 #' @export
-spr_heat_plot <- function(data,type = c("rank","time","centered"),
+spr_heat_plot <- function(data,type = c("rank","time","centered","grand_centered"),
                           nation_col = NULL,name_col = NULL,offset.x = 0.03){
   if (!is.null(nation_col) & !is.null(name_col)){
     stop("Please only specify one of nation_col or name_col.")
@@ -33,15 +33,18 @@ spr_heat_plot <- function(data,type = c("rank","time","centered"),
   ycol <- switch(EXPR = type,
                  rank = "round_ranks",
                  time = "times",
-                 centered = "centered_times")
+                 centered = "centered_times",
+                 grand_centered = "centered_all")
   ylab <- switch(EXPR = type,
                  rank = "Round Rank",
                  time = "Raw Times (Sec)",
-                 centered = "Centered Times By Round")
+                 centered = "Centered Times By Round",
+                 grand_centered = "Centered Times Across Rounds")
   y_ties_adj <- switch(EXPR = type,
                        rank = 1,
                        time = 1,
-                       percent = 1)
+                       centered = 1,
+                       grand_centered = 1)
 
   data$round_type <- dplyr::recode(data$round,
                                   qual = "Qualification",
@@ -57,6 +60,7 @@ spr_heat_plot <- function(data,type = c("rank","time","centered"),
                            levels = c('Qualification','Quarterfinal',
                                       'Semifinal','Final'))
   data <- data %>%
+    mutate(centered_all = (times - mean(times,na.rm = TRUE)) / sd(times,na.rm = TRUE)) %>%
     group_by(round_type) %>%
     mutate(centered_times = (times - mean(times,na.rm = TRUE)) / sd(times,na.rm = TRUE),
            round_ranks = min_rank(times)) %>%
