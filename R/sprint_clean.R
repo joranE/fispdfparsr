@@ -99,7 +99,7 @@ sprint_clean <- function(tbls,...){
   spr[[1]] <- spr[[1]] %>%
     arrange(round,ranks) %>%
     group_by(round) %>%
-    mutate(times = cumsum(times))
+    mutate(times = if_else(ranks == 1,times,times + times[1]))
   spr <- bind_rows(spr)
   spr
 }
