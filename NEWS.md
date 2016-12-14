@@ -4,6 +4,8 @@
 
 * Added function to plot movement during distance races
 
+* Fixed dumb bug in sprint_clean that cause all the heat times to be wrong :(
+
 # fispdfparsr 0.0.1
 
 * Added a `NEWS.md` file to track changes to the package.
