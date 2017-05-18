@@ -36,7 +36,10 @@ sprint_clean <- function(tbls,...){
   #Try to attach column names
   tbls <- lapply(tbls,function(x,cn) {
     nc <- ncol(x)
-    if (nc < 6){
+    #Checking is col2 is actually names; for when bib
+    # is all blank
+    col2_size <- max(nchar(stringr::str_trim(x[,2])))
+    if (col2_size > 3){
       cn <- cn[-2]
       colnames(x) <- cn[seq_len(nc)]
       return(as_data_frame(x))
@@ -52,9 +55,14 @@ sprint_clean <- function(tbls,...){
     mutate_all(na_if,y = "") %>%
     mutate(rank = as.integer(rank),
            bib = as.integer(bib),
+           qual_time = stringr::str_trim(gsub("\\(.*\\)","",qual_time)),
            qual_time = period_to_seconds(hms(paste0("00:",qual_time))),
            qual_rank = as.integer(stringr::str_replace_all(qual_rank,"[^0-9]",""))) %>%
     filter(!is.na(rank))
+
+  if (any(is.na(spr_df$qual_rank))){
+    spr_df <- mutate(spr_df,qual_rank = dplyr::coalesce(qual_rank,rank))
+  }
 
   #More fiddly cleanup and time parsing
   for (col_i in cn[grepl("^qf|^sf|^final",cn)]){
