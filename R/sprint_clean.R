@@ -23,13 +23,30 @@ sprint_clean <- function(tbls,...){
       col_idx <- as.integer(col_idx)
       if (is.na(col_idx)) stop("Invalid column choice.")
       if (col_idx == 0) next
-      if (col_idx > (nc - 3) | col_idx < 6) stop("Column choice out of bounds.")
+      #if (col_idx > (nc - 3) | col_idx < 6) stop("Column choice out of bounds.")
       else{
         left <- tbls[[i]][,seq_len(col_idx),drop = FALSE]
         right <- tbls[[i]][,(col_idx+1):nc,drop = FALSE]
         mid <- matrix(rep("",nrow(tbls[[i]])),ncol = 1)
         tbls[[i]] <- cbind(left,mid,right)
       }
+    }
+  }
+
+  for (i in seq_along(tbls)){
+    nc <- ncol(tbls[[i]])
+    col2_size <- max(nchar(stringr::str_trim(tbls[[i]][,2])))
+    leading_digit <- grepl("^[0-9]",tbls[[i]][,2])
+
+    if (col2_size > 3 & all(leading_digit)){
+      left <- tbls[[i]][,1,drop = FALSE]
+      right = tbls[[i]][,3:nc,drop = FALSE]
+      bib <- stringr::str_extract(string = tbls[[i]][,2],pattern = "^[0-9]+")
+      ath_name <- stringr::str_replace(string = tbls[[i]][,2],
+                                       pattern = "^[0-9]+",
+                                       replacement = "")
+      ath_name <- stringr::str_trim(ath_name)
+      tbls[[i]] <- cbind(left,cbind(bib,ath_name),right)
     }
   }
 
