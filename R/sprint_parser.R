@@ -15,6 +15,7 @@
 #'
 #' @param file character; file path to PDF (use the PDF for the final results
 #' not the qualification results)
+#' @param other arguments passsed to parse_pdf
 #' @export
 #' @import stringr
 #' @import lubridate
@@ -24,13 +25,13 @@
 #' spr <- parse_spr_pdf(file = system.file("example_pdfs/spr_example1.pdf",
 #'                                          package = "fispdfparsr"))
 #' }
-parse_spr_pdf <- function(file = NULL){
+parse_spr_pdf <- function(file = NULL,...){
   if (is.null(file)){
     stop("Must provide file path.")
   }
 
   #Read tables from final PDF
-  spr_tbls <- parse_pdf(file = file,method = "matrix")
+  spr_tbls <- parse_pdf(file = file,method = "matrix",...)
 
   result <- sprint_clean(tbls = spr_tbls)
   result
