@@ -20,15 +20,23 @@ sprint_clean <- function(tbls,...){
       print(tbls[[i]])
       cat("Insert a blank column after which column? (Enter 0 to skip)?\n")
       col_idx <- readline(prompt = "After column: ")
-      col_idx <- as.integer(col_idx)
-      if (is.na(col_idx)) stop("Invalid column choice.")
-      if (col_idx == 0) next
+      col_idx <- as.integer(unlist(strsplit(col_idx,",")))
+      if (any(is.na(col_idx) | col_idx < 0 | col_idx > nc)) stop("Invalid column choice.")
+      if (col_idx[1] == 0) next
       #if (col_idx > (nc - 3) | col_idx < 6) stop("Column choice out of bounds.")
       else{
-        left <- tbls[[i]][,seq_len(col_idx),drop = FALSE]
-        right <- tbls[[i]][,(col_idx+1):nc,drop = FALSE]
-        mid <- matrix(rep("",nrow(tbls[[i]])),ncol = 1)
-        tbls[[i]] <- cbind(left,mid,right)
+        col_count <- col_idx
+        for (j in seq_along(col_idx)){
+          num_cols <- readline(prompt = sprintf("Number of columns to insert after col %s: ",col_idx[j]))
+          num_cols <- as.integer(num_cols)
+          left <- tbls[[i]][,seq_len(col_idx[j]),drop = FALSE]
+          right <- tbls[[i]][,(col_idx[j]+1):ncol(tbls[[i]]),drop = FALSE]
+          mid <- matrix(rep("",nrow(tbls[[i]]) * num_cols),ncol = num_cols)
+          tbls[[i]] <- cbind(left,mid,right)
+          if (j < length(col_idx)){
+            col_idx[j+1] <- col_idx[j+1] + num_cols
+          }
+        }
       }
     }
   }
@@ -40,7 +48,9 @@ sprint_clean <- function(tbls,...){
 
     if (col2_size > 3 & all(leading_digit)){
       left <- tbls[[i]][,1,drop = FALSE]
-      right = tbls[[i]][,3:nc,drop = FALSE]
+
+      if (all(tbls[[i]][,3] == "")) rt <- 4 else rt <- 3
+      right = tbls[[i]][,rt:nc,drop = FALSE]
       bib <- stringr::str_extract(string = tbls[[i]][,2],pattern = "^[0-9]+")
       ath_name <- stringr::str_replace(string = tbls[[i]][,2],
                                        pattern = "^[0-9]+",

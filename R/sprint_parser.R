@@ -15,7 +15,8 @@
 #'
 #' @param file character; file path to PDF (use the PDF for the final results
 #' not the qualification results)
-#' @param other arguments passsed to parse_pdf
+#' @param edit boolean; edit tables before passing them to be cleaned
+#' @param \dots other arguments passsed to parse_pdf
 #' @export
 #' @import stringr
 #' @import lubridate
@@ -25,13 +26,25 @@
 #' spr <- parse_spr_pdf(file = system.file("example_pdfs/spr_example1.pdf",
 #'                                          package = "fispdfparsr"))
 #' }
-parse_spr_pdf <- function(file = NULL,...){
+parse_spr_pdf <- function(file = NULL,edit = FALSE,...){
   if (is.null(file)){
     stop("Must provide file path.")
   }
 
   #Read tables from final PDF
   spr_tbls <- parse_pdf(file = file,method = "matrix",...)
+
+  if (edit){
+    for (i in seq_along(spr_tbls)){
+      print(spr_tbls[[i]])
+      cat("\n")
+      choice <- readline(prompt = "Edit (1) or skip (2)? ")
+      if (choice == "2") next
+      else {
+        spr_tbls[[i]] <- edit(spr_tbls[[i]])
+      }
+    }
+  }
 
   result <- sprint_clean(tbls = spr_tbls)
   result

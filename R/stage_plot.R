@@ -117,7 +117,7 @@ stage_plot <- function(data,type = c("rank","time","percent"),
   }
 
   left_labels <- filter(all_pts,stage == min(stage))
-  if (anyDuplicated(all_pts[["y"]]) > 0){
+  if (anyDuplicated(left_labels[["y"]]) > 0){
     ties <- which(duplicated(left_labels[["y"]]))
     left_labels[["y"]][ties] <- left_labels[["y"]][ties] + 1
   }
