@@ -31,8 +31,9 @@ dst_clean <- function(tbls,race_distance,...){
     tbls$fis <- NA
   }
   tbls <- tbls %>%
-    rename(fisid = `fis code`,nation = `nsa code`,
-           fispoints = fis,finish_time = finish) %>%
+    rename_at(.vars = vars(contains("nsa")),.funs = function(x) "nation") %>%
+    rename(fisid = `fis code`,fispoints = fis,
+           finish_time = finish) %>%
     select(rank,bib,fisid,name,nation,fispoints,everything()) %>%
     gather(key = split,
            value = split_time,
@@ -56,10 +57,14 @@ dst_clean <- function(tbls,race_distance,...){
            fispoints = as.numeric(fispoints)) %>%
     group_by(split) %>%
     mutate(split_rank = min_rank(split_time),
-           split_time_back = split_time - min(split_time)) %>%
+           split_time_back = split_time - min(split_time,na.rm = TRUE)) %>%
     ungroup() %>%
     rename(split_km = split,
            finish_rank = rank)
+
+  #Ensure finish_rank is integer
+  tbls <- tbls %>%
+    mutate(finish_rank = as.integer(stringr::str_extract(finish_rank,"[0-9]+")))
   tbls
 }
 
@@ -94,8 +99,9 @@ dst_clean_mass <- function(tbls,race_distance){
     tbls$fis <- NA
   }
   tbls <- tbls %>%
-    rename(fisid = `fis code`,nation = `nsa code`,
-           fispoints = fis,finish_time = finish) %>%
+    rename_at(.vars = vars(contains("nsa")),.funs = function(x) "nation") %>%
+    rename(fisid = `fis code`,fispoints = fis,
+           finish_time = finish) %>%
     select(rank,bib,fisid,name,nation,fispoints,everything())
   tbl_rank <- tbls %>%
     filter(val == 'split_rank') %>%
@@ -150,9 +156,13 @@ dst_clean_mass <- function(tbls,race_distance){
   tbl_out <- tbl_out %>%
     group_by(split_km) %>%
     mutate(split_rank = min_rank(split_time),
-           split_time_back = split_time - min(split_time),
+           split_time_back = split_time - min(split_time,na.rm = TRUE),
            split_time_bonus = split_time - split_bonus,
-           split_time_back_bonus = split_time_bonus - min(split_time_bonus)) %>%
+           split_time_back_bonus = split_time_bonus - min(split_time_bonus,na.rm = TRUE)) %>%
     ungroup()
+
+  #Ensure finish_rank is integer
+  tbl_out <- tbl_out %>%
+    mutate(finish_rank = as.integer(stringr::str_extract(finish_rank,"[0-9]+")))
   tbl_out
 }
