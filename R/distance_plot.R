@@ -35,7 +35,7 @@ dst_split_plot <- function(data,type = c("rank","time","percent"),
   #Add percent back column
   data <- data %>%
     group_by(split_km) %>%
-    mutate(split_perc_back = round(100 * (split_time_back / min(split_time)),2)) %>%
+    mutate(split_perc_back = round(100 * (split_time_back / min(split_time,na.rm = TRUE)),2)) %>%
     ungroup()
 
   ycol <- switch(EXPR = type,
@@ -86,6 +86,10 @@ dst_split_plot <- function(data,type = c("rank","time","percent"),
     geom_point(size = 4,fill = "white",
                color = "white",shape = 21) +
     geom_text(aes_string(label = "ycol_labs"),size = 2) +
+    # geom_text_repel(data = left_labels,
+    #                 mapping = aes_string(x = "label_left",y = ycol,
+    #                                      label = "name"),
+    #                 hjust = 1,size = 2,direction = "y",force = 0.25,nudge_x = -1,ylim = c(0,100)) +
     geom_text(data = left_labels,
               mapping = aes_string(x = "label_left",y = ycol,
                                    label = "name"),
