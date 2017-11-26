@@ -22,7 +22,7 @@
 #' }
 #' @import ggplot2
 #' @export
-spr_heat_plot <- function(data,type = c("rank","time","centered","grand_centered"),
+spr_heat_plot <- function(data,type = c("rank","path","time","centered","grand_centered"),
                           nation_col = NULL,name_col = NULL,offset.x = 0.03){
   if (!is.null(nation_col) & !is.null(name_col)){
     stop("Please only specify one of nation_col or name_col.")
@@ -31,12 +31,14 @@ spr_heat_plot <- function(data,type = c("rank","time","centered","grand_centered
   type <- match.arg(arg = type)
 
   ycol <- switch(EXPR = type,
+                 path = "round_paths",
                  rank = "round_ranks",
                  time = "times",
                  centered = "centered_times",
                  grand_centered = "centered_all")
   ylab <- switch(EXPR = type,
-                 rank = "Round Rank",
+                 path = "Rank Within Heat",
+                 rank = "Round Rank Across All Heats",
                  time = "Raw Times (Sec)",
                  centered = "Centered Times By Round",
                  grand_centered = "Centered Times Across Rounds")
@@ -66,6 +68,18 @@ spr_heat_plot <- function(data,type = c("rank","time","centered","grand_centered
            round_ranks = min_rank(times)) %>%
     ungroup() %>%
     mutate(heat_label = stringr::str_extract(round,pattern = "[0-9]"))
+
+  #Add round_paths
+  data <- data %>%
+    mutate(round_paths = ranks) %>%
+    mutate(round_paths_adj = case_when(round == "qf2" ~ 6,
+                                       round == "qf3" ~ 12,
+                                       round == "qf4" ~ 18,
+                                       round == "qf5" ~ 24,
+                                       round == "sf2" ~ 6,
+                                       TRUE ~ 0)) %>%
+    mutate(round_paths = round_paths + round_paths_adj) %>%
+    select(-round_paths_adj)
 
   final_labs <- filter(data,round == "final_heat") %>%
     mutate(xpos = 4 + offset.x)
