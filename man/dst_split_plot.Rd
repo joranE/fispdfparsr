@@ -4,8 +4,13 @@
 \alias{dst_split_plot}
 \title{Plot Distance Split}
 \usage{
-dst_split_plot(data, type = c("rank", "time", "percent"), nation_col = NULL,
-  name_col = NULL, offset.x = 0.25)
+dst_split_plot(
+  data,
+  type = c("rank", "time", "percent"),
+  nation_col = NULL,
+  name_col = NULL,
+  offset.x = 0.25
+)
 }
 \arguments{
 \item{data}{data.frame, as returned by \code{\link{parse_dst_pdf}}}
@@ -39,4 +44,3 @@ p <- dst_split_plot(data = dst,type = "percent",nation_col = c("USA","CAN"))
 print(p)
 }
 }
-

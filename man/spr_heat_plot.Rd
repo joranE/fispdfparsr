@@ -4,8 +4,13 @@
 \alias{spr_heat_plot}
 \title{Plot Sprint Heats}
 \usage{
-spr_heat_plot(data, type = c("rank", "time", "centered", "grand_centered"),
-  nation_col = NULL, name_col = NULL, offset.x = 0.03)
+spr_heat_plot(
+  data,
+  type = c("rank", "path", "time", "centered", "grand_centered"),
+  nation_col = NULL,
+  name_col = NULL,
+  offset.x = 0.03
+)
 }
 \arguments{
 \item{data}{data.frame, as returned by \code{\link{parse_spr_pdf}}}
@@ -35,4 +40,3 @@ p <- spr_heat_plot(data = spr,type = "centered",nation_col = c("USA","CAN"))
 print(p)
 }
 }
-

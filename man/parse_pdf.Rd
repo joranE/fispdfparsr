@@ -14,4 +14,3 @@ parse_pdf(file, ...)
 \description{
 Wrapper for \code{\link[tabulizer]{extract_tables}}
 }
-

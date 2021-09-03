@@ -4,8 +4,13 @@
 \alias{stage_plot}
 \title{Stage Results Plot}
 \usage{
-stage_plot(data, type = c("rank", "time", "percent"), nation_col = NULL,
-  name_col = NULL, offset.x = 0.05)
+stage_plot(
+  data,
+  type = c("rank", "time", "percent"),
+  nation_col = NULL,
+  name_col = NULL,
+  offset.x = 0.05
+)
 }
 \arguments{
 \item{data}{data.frame; output from \code{\link{parse_stage_pdf}}}
@@ -32,4 +37,3 @@ p <- stage_plot(data = stg,type = "rank")
 print(p)
 }
 }
-

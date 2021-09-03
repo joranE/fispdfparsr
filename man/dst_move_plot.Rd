@@ -18,4 +18,3 @@ dst_move_plot(data, n = 5, top_n = Inf, offset.x = 0.25)
 \description{
 Highlight movement up and down by skiers throughout a distance race.
 }
-

@@ -17,4 +17,3 @@ Parse World Cup Point PDFs
 stg <- parse_wc_pts_pdf(file = system.file("example_pdfs/wc_pts_example1.pdf",package = "fispdfparsr"))
 }
 }
-

@@ -4,11 +4,15 @@
 \alias{parse_spr_pdf}
 \title{Parse Sprint Race PDFs}
 \usage{
-parse_spr_pdf(file = NULL)
+parse_spr_pdf(file = NULL, edit = FALSE, ...)
 }
 \arguments{
 \item{file}{character; file path to PDF (use the PDF for the final results
 not the qualification results)}
+
+\item{edit}{boolean; edit tables before passing them to be cleaned}
+
+\item{\dots}{other arguments passsed to parse_pdf}
 }
 \description{
 Convert FIS sprint result PDFs into a format more
@@ -29,4 +33,3 @@ spr <- parse_spr_pdf(file = system.file("example_pdfs/spr_example1.pdf",
                                          package = "fispdfparsr"))
 }
 }
-

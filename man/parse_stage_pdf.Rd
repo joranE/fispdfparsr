@@ -19,10 +19,10 @@ race, I have found that this function will garble the within stage rank
 columns somewhat. In my limited testing, the results are typically repairable
 with minimal work.
 }
+
 \examples{
 \dontrun{
 pdf <- system.file("example_pdfs/stage_example1.pdf",package = "fispdfparsr")
 stg <- parse_stage_pdf(file = pdf)
 }
 }
-

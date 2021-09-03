@@ -13,4 +13,3 @@ convert_to_secs(times)
 Utility function that pads times with the appropriate number of copies
 of "00:" to put it in hh:mm:ss.s format and then converts to seconds.
 }
-
