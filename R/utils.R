@@ -41,3 +41,20 @@ dst_rank_change <- function(data,n = 5,top_n = Inf){
   result <- list(gain = head(gain,n),loss = tail(loss,n))
   result
 }
+
+#' @export
+shorten_names <- function(x){
+  x %>%
+    stringr::str_extract(string = .,pattern = "^[A-Z]*") %>%
+    stringr::str_to_title()
+}
+
+fix_col_names <- function(x){
+  dup_cn <- duplicated(x)
+  if (any(dup_cn)){
+    n <- length(x)
+    idx <- which(dup_cn)
+    x[dup_cn] <- paste0("V",idx)
+  }
+  x
+}

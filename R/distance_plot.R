@@ -46,7 +46,7 @@ dst_split_plot <- function(data,type = c("rank","time","percent"),
                  rank = "Split Rank",
                  time = "Split Time Back (Sec)",
                  percent = "Split % Back")
-  y_ties_adj <- switch(type,rank = 1,time = 1,percent = 1)
+  y_ties_adj <- switch(type,rank = 1,time = 5,percent = 0.005)
   n_splits <- dplyr::n_distinct(data$split_km)
 
   left_labels <- filter(data,split_km == min(split_km))
@@ -86,10 +86,6 @@ dst_split_plot <- function(data,type = c("rank","time","percent"),
     geom_point(size = 4,fill = "white",
                color = "white",shape = 21) +
     geom_text(aes_string(label = "ycol_labs"),size = 2) +
-    # geom_text_repel(data = left_labels,
-    #                 mapping = aes_string(x = "label_left",y = ycol,
-    #                                      label = "name"),
-    #                 hjust = 1,size = 2,direction = "y",force = 0.25,nudge_x = -1,ylim = c(0,100)) +
     geom_text(data = left_labels,
               mapping = aes_string(x = "label_left",y = ycol,
                                    label = "name"),
