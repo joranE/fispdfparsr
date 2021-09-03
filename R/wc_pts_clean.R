@@ -22,7 +22,7 @@ wc_pts_clean <- function(tbls,...){
   tbls <- lapply(tbls,function(x) x[-1,,drop = FALSE])
   tbls <- lapply(tbls,function(x) {
     x <- apply(x,2,stringr::str_trim,side = "both")
-    x <- as_data_frame(x)
+    x <- tibble::as_tibble(x,.name_repair = "minimal")
     x})
   tbls <- bind_rows(tbls)
   tbls$grp <- rep(seq_len(nrow(tbls) / 3),each = 3)

@@ -32,16 +32,36 @@ parse_spr_pdf <- function(file = NULL,edit = FALSE,...){
   }
 
   #Read tables from final PDF
-  spr_tbls <- parse_pdf(file = file,method = "matrix",...)
+  spr_tbls <- parse_pdf(file = file,method = "decide",output = "matrix",...)
 
   if (edit){
+    to_remove <- c()
     for (i in seq_along(spr_tbls)){
+      yc_idx <- apply(spr_tbls[[i]],2,FUN = function(x) any(x == "YC") & all(x %in% c("","YC")))
+      spr_tbls[[i]] <- spr_tbls[[i]][,!yc_idx]
       print(spr_tbls[[i]])
       cat("\n")
-      choice <- readline(prompt = "Edit (1) or skip (2)? ")
-      if (choice == "2") next
-      else {
+      choice <- readline(prompt = "Keep (1) or discard (2), edit (3) or browser (4)? ")
+      if (choice == "1") next
+      if (choice == "3") {
         spr_tbls[[i]] <- edit(spr_tbls[[i]])
+      }
+      if (choice == "2"){
+        to_remove <- c(to_remove,i)
+      }
+      if (choice == "4"){
+        browser()
+      }
+    }
+    if (length(to_remove) > 0){
+      spr_tbls <- spr_tbls[-to_remove]
+    }
+    choice <- readline(prompt = "Add additional tables from pages? (0 = skip) ")
+    if (choice != "0"){
+      pg <- str_split(string = choice,pattern = ",")[[1]] %>% as.integer()
+      n <- length(spr_tbls)
+      for (i in seq_along(pg)){
+        spr_tbls[[n + i]] <- extract_areas(file = file,pages = pg[i])[[1]]
       }
     }
   }

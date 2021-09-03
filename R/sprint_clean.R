@@ -69,10 +69,10 @@ sprint_clean <- function(tbls,...){
     if (col2_size > 3){
       cn <- cn[-2]
       colnames(x) <- cn[seq_len(nc)]
-      return(as_data_frame(x))
+      return(tibble::as_tibble(x))
     }else{
       colnames(x) <- cn[seq_len(nc)]
-      return(as_data_frame(x))
+      return(tibble::as_tibble(x))
     }
   },cn = cn)
 
