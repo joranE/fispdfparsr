@@ -10,5 +10,5 @@ convert_to_secs <- function(times){
   time_pad <- ifelse(colon_count == 0,"",
                      ifelse(colon_count == 1,"00:","00:00:"))
   time_pad[is.na(time_pad)] <- ""
-  lubridate::period_to_seconds(lubridate::hms(paste0(time_pad,times)))
+  lubridate::period_to_seconds(lubridate::hms(paste0(time_pad,times),quiet = TRUE))
 }
